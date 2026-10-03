@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Raja Hair Saloon</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
+        body { background: linear-gradient(135deg, #0b132b, #1c2541, #3a506b); color: #fff; min-height: 100vh; display: flex; justify-content: center; align-items: flex-start; padding: 15px; }
+        .page-wrapper { display: flex; justify-content: center; align-items: flex-start; width: 100%; max-width: 480px; margin: 0 auto; }
+        .container { background: linear-gradient(145deg, #1f2937, #111827); width: 100%; padding: 15px; border-radius: 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); border: 1.5px solid rgba(96, 165, 250, 0.4); text-align: center; position: relative; }
+        
+        /* Top Admin & Share Bar */
+        .top-admin-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 11px; }
+        .admin-btn-small { background: #2563eb; color: #fff; border: none; padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer; }
+        .share-btn-top { background: #059669; color: #fff; border: none; padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 4px; }
+
+        /* Live Scrolling Ticker Banner */
+        .ticker-wrap { background: linear-gradient(135deg, #dc2626, #b91c1c); border-radius: 8px; overflow: hidden; margin-bottom: 12px; border: 1px solid #f87171; padding: 7px 0; }
+        .ticker { display: inline-block; white-space: nowrap; animation: marquee 18s linear infinite; font-size: 12px; font-weight: bold; color: #fff; padding-left: 100%; }
+        @keyframes marquee { 0% { transform: translate(0, 0); } 100% { transform: translate(-100%, 0); } }
+
+        /* Profile & Header */
+        .profile-section { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; background: linear-gradient(120deg, #1e3a8a, #1e40af); padding: 12px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.2); position: relative; }
+        
+        /* Clean Profile Circle */
+        .profile-pic-wrap { position: relative; width: 85px; height: 85px; flex-shrink: 0; cursor: pointer; }
+        .profile-pic { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 3px solid #60a5fa; }
+        
+        .profile-info { text-align: left; width: 100%; }
+        .shop-title { font-size: 18px; font-weight: 800; color: #facc15; margin-bottom: 2px; }
+        .owner-text { font-size: 11px; color: #d1d5db; }
+        
+        .desc-text { font-size: 13px; color: #e5e7eb; line-height: 1.5; margin-bottom: 12px; font-weight: 600; background: rgba(0, 0, 0, 0.3); padding: 10px; border-radius: 8px; border: 1.5px dashed #60a5fa; text-align: left; }
+        
+        .btn { background: linear-gradient(135deg, #2563eb, #1d4ed8); color: #fff; padding: 11px 14px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 13px; display: block; width: 100%; border: 1px solid rgba(255,255,255,0.2); margin-bottom: 8px; cursor: pointer; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: transform 0.1s; }
+        .btn:active { transform: scale(0.98); }
+        .button-row { display: flex; gap: 8px; margin-bottom: 8px; width: 100%; }
+        .button-row .btn { margin-bottom: 0; flex: 1; }
+
+        /* Modal Popup for Sections */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center; padding: 15px; }
+        .modal-box { background: #1f2937; border: 2px solid #60a5fa; border-radius: 14px; width: 100%; max-width: 420px; padding: 20px; text-align: left; max-height: 90vh; overflow-y: auto; }
+        .modal-box h3 { color: #facc15; margin-bottom: 12px; font-size: 16px; border-bottom: 1px solid #374151; padding-bottom: 6px; display: flex; justify-content: space-between; align-items: center; }
+        .close-x { background: #ef4444; color: #fff; border: none; width: 26px; height: 26px; border-radius: 50%; font-weight: bold; cursor: pointer; font-size: 14px; display: flex; justify-content: center; align-items: center; }
+
+        /* Price List Inside Modal */
+        .service-item { display: flex; justify-content: space-between; font-size: 13px; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.1); color: #d1d5db; }
+        .service-price { color: #34d399; font-weight: bold; }
+
+        /* QR Section Inside Modal */
+        .qr-section { text-align: center; }
+        .qr-box { background: #fff; padding: 10px; display: inline-block; border-radius: 8px; margin-bottom: 8px; }
+        .qr-box img { width: 160px; height: 160px; display: block; margin: 0 auto; }
+        .upi-id { font-size: 12px; color: #93c5fd; font-weight: bold; margin-bottom: 10px; }
+
+        /* Admin Form Controls */
+        .form-group { margin-bottom: 10px; }
+        .form-group label { display: block; font-size: 11px; color: #93c5fd; margin-bottom: 4px; font-weight: bold; }
+        .form-group input, .form-group textarea { width: 100%; padding: 8px; background: #111827; border: 1px solid #374151; color: #fff; border-radius: 6px; font-size: 12px; }
+        .save-admin-btn { background: #059669; color: #fff; border: none; padding: 10px; width: 100%; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .add-item-btn { background: #3b82f6; color: #fff; border: none; padding: 8px; width: 100%; border-radius: 6px; font-weight: bold; cursor: pointer; margin-bottom: 12px; font-size: 12px; }
+        .delete-item-btn { background: #ef4444; color: #fff; border: none; padding: 6px 10px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer; }
+        .item-row-edit { display: flex; gap: 6px; margin-bottom: 6px; align-items: center; background: rgba(0,0,0,0.2); padding: 6px; border-radius: 6px; border: 1px solid #374151; }
+
+        .footer { font-size: 12px; color: #60a5fa; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px; margin-top: 12px; text-align: center; font-weight: bold; text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
+    </style>
+</head>
+<body>
+
+    <div class="page-wrapper">
+        <div class="container">
+            
+            <!-- Top Admin & Share Bar -->
+            <div class="top-admin-bar">
+                <button class="share-btn-top" onclick="shareWebsite()">🔗 Site Share Karein</button>
+                <button class="admin-btn-small" onclick="openAdminModal()">Admin Login</button>
+            </div>
+
+            <!-- Live Scrolling Ticker Banner -->
+            <div class="ticker-wrap">
+                <div class="ticker" id="displaySpecial">
+                    ⚡ राजा हेयर सैलून में आपका स्वागत है! बेहतरीन हेयर स्टाइलिंग & Grooming | Special Offer: Haircut + Beard ₹120!
+                </div>
+            </div>
+            
+            <!-- Profile & Shop Info -->
+            <div class="profile-section">
+                <div class="profile-pic-wrap" onclick="triggerPhotoSelect()" title="Profile Photo Badle">
+                    <img id="displayProfilePic" src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=150" alt="Raja Hair Saloon" class="profile-pic">
+                </div>
+                <input type="file" id="fileInput" accept="image/*" style="display:none;" onchange="handleImageUpload(event)">
+                
+                <div class="profile-info">
+                    <div class="shop-title" id="displayShopName">राजा हेयर सैलून</div>
+                    <div class="owner-text" id="displayOwner">Proprietor: Raja Ji</div>
+                </div>
+            </div>
+            
+            <div class="desc-text" id="displayAddress">
+                📍 <b id="displayAddressText">पता: मुख्य बाजार, पीएनबी बैंक सांपला</b><br>
+                🕒 <span id="displayTimeText">समय: सुबह 7:00 से रात 9:00 बजे तक</span>
+            </div>
+
+            <!-- Quick WhatsApp Action -->
+            <a href="https://api.whatsapp.com/send?phone=919876543210&text=Hi,%20mujhe%20appointment%20book%20karwani%20hai." id="displayWhatsapp" class="btn" target="_blank" style="background: linear-gradient(135deg, #25D366, #128C7E);">💬 व्हाट्सएप अपॉइंटमेंट बुक करें</a>
+
+            <!-- Action Buttons for Rate List & Payment -->
+            <button class="btn" onclick="openModal('rateModal')" style="background: linear-gradient(135deg, #d97706, #b45309);">✂️ सर्विस रेट लिस्ट (Price List) देखें</button>
+            <button class="btn" onclick="openModal('payModal')" style="background: linear-gradient(135deg, #059669, #047857);">📲 सीधा पेमेंट QR कोड देखें</button>
+
+            <!-- Utility Row -->
+            <div class="button-row">
+                <a href="tel:9876543210" id="displayPhone" class="btn" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);">📞 कॉल करें</a>
+                <a href="https://maps.google.com" id="displayMap" class="btn" target="_blank" style="background: linear-gradient(135deg, #7c3aed, #6d28d9);">📍 लोकेशन</a>
+            </div>
+
+            <div class="footer">&copy; 2026 Powered by <b>dakshyadav.co.in</b></div>
+        </div>
+    </div>
+
+    <!-- Website QR & Download Modal -->
+    <div class="modal" id="siteQrModal">
+        <div class="modal-box qr-section">
+            <h3><span>🌐 Website QR & Download</span> <button class="close-x" onclick="closeModal('siteQrModal')">×</button></h3>
+            <div style="font-size: 12px; color: #93c5fd; margin-bottom: 8px;">Is QR code ko scan karke koi bhi direct website khol sakta hai:</div>
+            <div class="qr-box" style="background:#fff; padding:10px; border-radius:8px; display:inline-block; margin-bottom:10px;">
+                <img id="displaySiteQr" src="" alt="Site QR" style="width:160px; height:160px; display:block; margin:0 auto;">
+            </div>
+            <div style="font-size: 11px; color: #d1d5db; margin-bottom: 12px;" id="displayUrlText"></div>
+            
+            <div style="display: flex; gap: 8px; flex-direction: column;">
+                <button class="admin-btn-small" onclick="shareSiteQrImage()" style="background: #2563eb; padding: 10px; font-size: 12px;">📤 WhatsApp par Website QR Bhejein</button>
+                <button class="admin-btn-small" onclick="downloadHtmlFile()" style="background: #059669; padding: 10px; font-size: 12px;">📥 Phone me File Download Karein</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rate List Modal -->
+    <div class="modal" id="rateModal">
+        <div class="modal-box">
+            <h3><span>✂️ सर्विस रेट लिस्ट</span> <button class="close-x" onclick="closeModal('rateModal')">×</button></h3>
+            <div id="displayCatalog">
+                <!-- Dynamically populated items -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment QR Modal with Share Feature -->
+    <div class="modal" id="payModal">
+        <div class="modal-box qr-section">
+            <h3><span>📲 सीधा पेमेंट QR</span> <button class="close-x" onclick="closeModal('payModal')">×</button></h3>
+            <div class="qr-box">
+                <img id="displayQrImg" src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=upi://pay?pa=rajahairsaloon@upi&pn=RajaHairSaloon" alt="UPI QR">
+            </div>
+            <div class="upi-id" id="displayUpi">UPI ID: rajahairsaloon@okhdfcbank</div>
+            <div style="font-size: 11px; color: #9ca3af; margin-bottom: 10px;">स्कैन करके तुरंत भुगतान करें</div>
+            
+            <div style="display: flex; gap: 8px; justify-content: center;">
+                <button class="admin-btn-small" onclick="shareShopQR()" style="background: #2563eb; flex: 1;">📤 QR Share Karein</button>
+                <button class="admin-btn-small" onclick="checkAdminBeforeQrAction()" style="background: #d97706; flex: 1;">📷 Gallery se Badle</button>
+            </div>
+            <input type="file" id="qrFileInput" accept="image/*" style="display:none;" onchange="handleQrUpload(event)">
+        </div>
+    </div>
+
+    <!-- Admin Login / Panel Modal -->
+    <div class="modal" id="adminModal">
+        <div class="modal-box">
+            <h3 id="adminModalTitle"><span>🔐 Admin Login</span> <button class="close-x" onclick="closeModal('adminModal')">×</button></h3>
+            
+            <!-- Login View -->
+            <div id="loginView">
+                <div class="form-group">
+                    <label>Password dalein</label>
+                    <input type="password" id="adminPassInput" placeholder="Enter password">
+                </div>
+                <button class="save-admin-btn" onclick="verifyAdmin()">Login karein</button>
+            </div>
+
+            <!-- Dashboard View -->
+            <div id="dashboardView" style="display:none;">
+                <div class="form-group">
+                    <label>Shop Name (दुकान का नाम)</label>
+                    <input type="text" id="inputShopName" value="राजा हेयर सैलून">
+                </div>
+                <div class="form-group">
+                    <label>Live Ticker / Special Offer Text</label>
+                    <input type="text" id="inputSpecial" value="⚡ राजा हेयर सैलून में आपका स्वागत है! बेहतरीन हेयर स्टाइलिंग & Grooming | Special Offer: Haircut + Beard ₹120!">
+                </div>
+                <div class="form-group">
+                    <label>Address (पता)</label>
+                    <input type="text" id="inputAddress" value="पता: मुख्य बाजार, पीएनबी बैंक सांपला">
+                </div>
+                <div class="form-group">
+                    <label>Time / Timing (समय)</label>
+                    <input type="text" id="inputTime" value="समय: सुबह 7:00 से रात 9:00 बजे तक">
+                </div>
+                <div class="form-group">
+                    <label>Mobile Number (WhatsApp & Call ke liye)</label>
+                    <input type="text" id="inputMobile" value="9876543210">
+                </div>
+                <div class="form-group">
+                    <label>Live Website URL (jaise https://rajasaloon.netlify.app)</label>
+                    <input type="text" id="inputWebsiteUrl" value="https://rajasaloon.netlify.app" placeholder="Apni website ka link dalein">
+                </div>
+
+                <h4 style="color: #facc15; font-size: 13px; margin: 10px 0 6px 0; border-top: 1px solid #374151; padding-top: 8px;">Rate List Customization (Items & Prices)</h4>
+                <div id="adminItemsContainer">
+                    <!-- Dynamic admin item rows -->
+                </div>
+                <button class="add-item-btn" onclick="addAdminItemRow('Naya Item', '₹100')">+ Naya Item Jodein</button>
+
+                <button class="save-admin-btn" onclick="saveAdminChanges()">Badlaav Save Karein</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let isAdmin = false;
+
+        let itemsList = [
+            { name: "Haircut (बाल कटिंग)", price: "₹80" },
+            { name: "Beard Styling / Shaving (दाढ़ी)", price: "₹50" },
+            { name: "Hair Color / Dye (रंग)", price: "₹150" },
+            { name: "Head Massage (मसाज)", price: "₹100" },
+            { name: "Facial / Cleanup (फेशियल)", price: "₹300" }
+        ];
+
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function openAdminModal() {
+            openModal('adminModal');
+            const titleEl = document.getElementById('adminModalTitle');
+            const loginV = document.getElementById('loginView');
+            const dashV = document.getElementById('dashboardView');
+
+            if(isAdmin) {
+                titleEl.innerHTML = '<span>⚙️ Admin Dashboard</span> <button class="close-x" onclick="closeModal(\'adminModal\')">×</button>';
+                loginV.style.display = 'none';
+                dashV.style.display = 'block';
+                renderAdminItems();
+            } else {
+                titleEl.innerHTML = '<span>🔐 Admin Login</span> <button class="close-x" onclick="closeModal(\'adminModal\')">×</button>';
+                document.getElementById('adminPassInput').value = '';
+                loginV.style.display = 'block';
+                dashV.style.display = 'none';
+            }
+        }
+
+        function verifyAdmin() {
+            const pass = document.getElementById('adminPassInput').value;
+            if(pass === '3362') {
+                isAdmin = true;
+                alert('Login Successful!');
+                openAdminModal();
+            } else {
+                alert('Galat Password! Sahi password 3362 hai.');
+            }
+        }
+
+        function checkAdminBeforeQrAction() {
+            if(isAdmin) {
+                document.getElementById('qrFileInput').click();
+            } else {
+                alert('Gallery se QR badlane ke liye pehle Admin Login karein!');
+            }
+        }
+
+        function triggerPhotoSelect() {
+            if(isAdmin) {
+                document.getElementById('fileInput').click();
+            } else {
+                alert('Profile photo badalne ke liye pehle Admin Login karein!');
+            }
+        }
+
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const base64Image = e.target.result;
+                    document.getElementById('displayProfilePic').src = base64Image;
+                    localStorage.setItem('raja_profile_pic', base64Image);
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function handleQrUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const base64Image = e.target.result;
+                    document.getElementById('displayQrImg').src = base64Image;
+                    localStorage.setItem('raja_qr_pic', base64Image);
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function shareWebsite() {
+            openModal('siteQrModal');
+        }
+
+        function shareShopQR() {
+            const qrSrc = document.getElementById('displayQrImg').src;
+            if (navigator.share) {
+                fetch(qrSrc)
+                    .then(res => res.blob())
+                    .then(blob => {
+                        const file = new File([blob], "raja-saloon-qr.png", { type: "image/png" });
+                        navigator.share({
+                            title: 'Raja Hair Saloon QR',
+                            text: 'Raja Hair Saloon ka payment QR!',
+                            files: [file]
+                        }).catch(console.error);
+                    }).catch(() => {
+                        navigator.clipboard.writeText(window.location.href);
+                        alert('Link copied to clipboard!');
+                    });
+            } else {
+                alert('Sharing is not supported on this browser.');
+            }
+        }
+
+        function renderCatalog() {
+            const container = document.getElementById('displayCatalog');
+            container.innerHTML = '';
+            itemsList.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'service-item';
+                div.innerHTML = `<span>${item.name}</span><span class="service-price">${item.price}</span>`;
+                container.appendChild(div);
+            });
+        }
+
+        function renderAdminItems() {
+            const container = document.getElementById('adminItemsContainer');
+            container.innerHTML = '';
+            itemsList.forEach((item, index) => {
+                const row = document.createElement('div');
+                row.className = 'item-row-edit';
+                row.innerHTML = `
+                    <input type="text" value="${item.name}" placeholder="Item Name" style="flex: 2.5;" id="admItemName_${index}">
+                    <input type="text" value="${item.price}" placeholder="Price" style="flex: 1; max-width: 90px;" id="admItemPrice_${index}">
+                    <button class="delete-item-btn" onclick="removeAdminItem(${index})">❌</button>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        function addAdminItemRow(name, price) {
+            itemsList.push({ name: name, price: price });
+            renderAdminItems();
+        }
+
+        function removeAdminItem(index) {
+            if(itemsList.length <= 1) {
+                alert('Kam se kam ek item hona zaroori hai!');
+                return;
+            }
+            itemsList.splice(index, 1);
+            renderAdminItems();
+        }
+
+        function saveAdminChanges() {
+            const sName = document.getElementById('inputShopName').value;
+            const sSpecial = document.getElementById('inputSpecial').value;
+            const sAddress = document.getElementById('inputAddress').value;
+            const sTime = document.getElementById('inputTime').value;
+
+            let newItems = [];
+            itemsList.forEach((_, index) => {
+                const nameInput = document.getElementById('admItemName_' + index);
+                const priceInput = document.getElementById('admItemPrice_' + index);
+                if(nameInput && priceInput) {
+                    newItems.push({ name: nameInput.value, price: priceInput.value });
+                }
+            });
+
+            if(newItems.length > 0) {
+                itemsList = newItems;
+            }
+
+            document.getElementById('displayShopName').innerText = sName;
+            document.getElementById('displaySpecial').innerText = sSpecial;
+            document.getElementById('displayAddressText').innerText = sAddress;
+            document.getElementById('displayTimeText').innerText = sTime;
+
+            renderCatalog();
+
+            const sMobile = document.getElementById('inputMobile').value.trim();
+
+            document.getElementById('displayWhatsapp').href = 'https://api.whatsapp.com/send?phone=91' + sMobile + '&text=Hi,%20mujhe%20appointment%20book%20karwani%20hai.';
+            document.getElementById('displayPhone').href = 'tel:' + sMobile;
+
+            localStorage.setItem('raja_shop_name', sName);
+            localStorage.setItem('raja_special', sSpecial);
+            localStorage.setItem('raja_address', sAddress);
+            localStorage.setItem('raja_time', sTime);
+            localStorage.setItem('raja_mobile', sMobile);
+            const sWebsiteUrl = document.getElementById('inputWebsiteUrl').value.trim();
+            localStorage.setItem('raja_website_url', sWebsiteUrl);
+            
+            localStorage.setItem('raja_items_list', JSON.stringify(itemsList));
+
+            alert('Sabhi badlaav successfully save ho gaye hain!');
+            closeModal('adminModal');
+        }
+
+        function getActiveWebsiteUrl() {
+            let currentUrl = window.location.href;
+            if (currentUrl.startsWith('content://') || currentUrl.startsWith('file://') || currentUrl.startsWith('blob://')) {
+                if (localStorage.getItem('raja_website_url')) {
+                    currentUrl = localStorage.getItem('raja_website_url');
+                } else {
+                    currentUrl = 'https://rajasaloon.netlify.app';
+                }
+            }
+            return currentUrl;
+        }
+
+        function initSiteQr() {
+            let currentUrl = getActiveWebsiteUrl();
+            document.getElementById('displaySiteQr').src = 'https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=' + encodeURIComponent(currentUrl);
+            document.getElementById('displayUrlText').innerText = currentUrl;
+        }
+
+        function shareSiteQrImage() {
+            let currentUrl = getActiveWebsiteUrl();
+            const qrSrc = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' + encodeURIComponent(currentUrl);
+            if (navigator.share) {
+                fetch(qrSrc)
+                    .then(res => res.blob())
+                    .then(blob => {
+                        const file = new File([blob], "raja-saloon-website-qr.png", { type: "image/png" });
+                        navigator.share({
+                            title: 'Raja Hair Saloon Website',
+                            text: 'Raja Hair Saloon ki official website kholne ke liye QR code scan karein ya link par click karein: ' + currentUrl,
+                            files: [file]
+                        }).catch(console.error);
+                    }).catch(() => {
+                        navigator.clipboard.writeText(currentUrl);
+                        alert('Website link copied to clipboard!');
+                    });
+            } else {
+                navigator.clipboard.writeText(currentUrl);
+                alert('Website link copied to clipboard!');
+            }
+        }
+
+        function downloadHtmlFile() {
+            const htmlContent = document.documentElement.outerHTML;
+            const blob = new Blob([htmlContent], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'raja_hair_saloon.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            alert('File phone me download ho gayi hai!');
+        }
+
+        function loadSavedData() {
+            initSiteQr();
+            if(localStorage.getItem('raja_profile_pic')) {
+                document.getElementById('displayProfilePic').src = localStorage.getItem('raja_profile_pic');
+            }
+            if(localStorage.getItem('raja_qr_pic')) {
+                document.getElementById('displayQrImg').src = localStorage.getItem('raja_qr_pic');
+            }
+            if(localStorage.getItem('raja_shop_name')) {
+                const val = localStorage.getItem('raja_shop_name');
+                document.getElementById('displayShopName').innerText = val;
+                document.getElementById('inputShopName').value = val;
+            }
+            if(localStorage.getItem('raja_special')) {
+                const val = localStorage.getItem('raja_special');
+                document.getElementById('displaySpecial').innerText = val;
+                document.getElementById('inputSpecial').value = val;
+            }
+            if(localStorage.getItem('raja_address')) {
+                const val = localStorage.getItem('raja_address');
+                document.getElementById('displayAddressText').innerText = val;
+                document.getElementById('inputAddress').value = val;
+            }
+            if(localStorage.getItem('raja_time')) {
+                const val = localStorage.getItem('raja_time');
+                document.getElementById('displayTimeText').innerText = val;
+                document.getElementById('inputTime').value = val;
+            }
+            if(localStorage.getItem('raja_website_url')) {
+                document.getElementById('inputWebsiteUrl').value = localStorage.getItem('raja_website_url');
+            }
+            if(localStorage.getItem('raja_mobile')) {
+                const val = localStorage.getItem('raja_mobile');
+                document.getElementById('inputMobile').value = val;
+                document.getElementById('displayWhatsapp').href = 'https://api.whatsapp.com/send?phone=91' + val + '&text=Hi,%20mujhe%20appointment%20book%20karwani%20hai.';
+                document.getElementById('displayPhone').href = 'tel:' + val;
+            }
+
+            if(localStorage.getItem('raja_items_list')) {
+                try {
+                    itemsList = JSON.parse(localStorage.getItem('raja_items_list'));
+                } catch(e) {}
+            }
+            renderCatalog();
+        }
+
+        window.onload = loadSavedData;
+    </script>
+</body>
+</html>
