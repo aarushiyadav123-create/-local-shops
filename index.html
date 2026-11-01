@@ -22,17 +22,19 @@
 
         /* Profile & Header */
         .profile-section { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; background: linear-gradient(120deg, #1e3a8a, #1e40af); padding: 12px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.2); position: relative; }
-        
-        /* Clean Profile Circle */
         .profile-pic-wrap { position: relative; width: 85px; height: 85px; flex-shrink: 0; cursor: pointer; }
         .profile-pic { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 3px solid #60a5fa; }
-        
         .profile-info { text-align: left; width: 100%; }
         .shop-title { font-size: 18px; font-weight: 800; color: #facc15; margin-bottom: 2px; }
         .owner-text { font-size: 11px; color: #d1d5db; }
         
         .desc-text { font-size: 13px; color: #e5e7eb; line-height: 1.5; margin-bottom: 12px; font-weight: 600; background: rgba(0, 0, 0, 0.3); padding: 10px; border-radius: 8px; border: 1.5px dashed #60a5fa; text-align: left; }
         
+        /* Banner Live Photo Section */
+        .live-banner-container { margin-bottom: 12px; border-radius: 10px; overflow: hidden; border: 1px solid rgba(96, 165, 250, 0.4); box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .live-banner-container img { width: 100%; height: auto; max-height: 180px; object-fit: cover; display: block; border-radius: 10px; cursor: pointer; transition: transform 0.2s; }
+        .live-banner-container img:hover { transform: scale(1.02); }
+
         .btn { background: linear-gradient(135deg, #2563eb, #1d4ed8); color: #fff; padding: 11px 14px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 13px; display: block; width: 100%; border: 1px solid rgba(255,255,255,0.2); margin-bottom: 8px; cursor: pointer; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: transform 0.1s; }
         .btn:active { transform: scale(0.98); }
         .button-row { display: flex; gap: 8px; margin-bottom: 8px; width: 100%; }
@@ -43,6 +45,13 @@
         .modal-box { background: #1f2937; border: 2px solid #60a5fa; border-radius: 14px; width: 100%; max-width: 420px; padding: 20px; text-align: left; max-height: 90vh; overflow-y: auto; }
         .modal-box h3 { color: #facc15; margin-bottom: 12px; font-size: 16px; border-bottom: 1px solid #374151; padding-bottom: 6px; display: flex; justify-content: space-between; align-items: center; }
         .close-x { background: #ef4444; color: #fff; border: none; width: 26px; height: 26px; border-radius: 50%; font-weight: bold; cursor: pointer; font-size: 14px; display: flex; justify-content: center; align-items: center; }
+
+        /* Gallery Grid */
+        .gallery-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 10px; }
+        .gallery-item { position: relative; border-radius: 8px; overflow: hidden; border: 1px solid #374151; height: 120px; }
+        .gallery-item img { width: 100%; height: 100%; object-fit: cover; cursor: pointer; }
+        .admin-gallery-item { display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.2); padding: 6px; border-radius: 6px; margin-bottom: 6px; border: 1px solid #374151; }
+        .admin-gallery-item img { width: 50px; height: 50px; object-fit: cover; border-radius: 4px; }
 
         /* Price List Inside Modal */
         .service-item { display: flex; justify-content: space-between; font-size: 13px; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.1); color: #d1d5db; }
@@ -102,10 +111,18 @@
                 🕒 <span id="displayTimeText">समय: सुबह 7:00 से रात 9:00 बजे तक</span>
             </div>
 
+            <!-- Live Photo Banner with Site Link -->
+            <div class="live-banner-container">
+                <a href="https://dakshyadav.co.in" id="displayBannerLink" target="_blank">
+                    <img id="displayBannerImg" src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600" alt="Special Promo Banner">
+                </a>
+            </div>
+
             <!-- Quick WhatsApp Action -->
             <a href="https://api.whatsapp.com/send?phone=919876543210&text=Hi,%20mujhe%20appointment%20book%20karwani%20hai." id="displayWhatsapp" class="btn" target="_blank" style="background: linear-gradient(135deg, #25D366, #128C7E);">💬 व्हाट्सएप अपॉइंटमेंट बुक करें</a>
 
-            <!-- Action Buttons for Rate List & Payment -->
+            <!-- Action Buttons for Rate List, Payment & Photo Gallery -->
+            <button class="btn" onclick="openModal('galleryModal')" style="background: linear-gradient(135deg, #8b5cf6, #6d28d9);">📸 Work Showcase & Gallery (फोटो देखें)</button>
             <button class="btn" onclick="openModal('rateModal')" style="background: linear-gradient(135deg, #d97706, #b45309);">✂️ सर्विस रेट लिस्ट (Price List) देखें</button>
             <button class="btn" onclick="openModal('payModal')" style="background: linear-gradient(135deg, #059669, #047857);">📲 सीधा पेमेंट QR कोड देखें</button>
 
@@ -119,13 +136,31 @@
         </div>
     </div>
 
+    <!-- Photo Gallery Modal -->
+    <div class="modal" id="galleryModal">
+        <div class="modal-box">
+            <h3><span>📸 Photo Gallery</span> <button class="close-x" onclick="closeModal('galleryModal')">×</button></h3>
+            <div class="gallery-grid" id="displayGalleryGrid">
+                <!-- Dynamic gallery images -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Zoom Photo View Modal -->
+    <div class="modal" id="imageZoomModal">
+        <div class="modal-box" style="text-align: center; background: transparent; border: none;">
+            <button class="close-x" onclick="closeModal('imageZoomModal')" style="float: right; margin-bottom: 10px;">×</button>
+            <img id="zoomedImage" src="" style="width: 100%; border-radius: 12px; border: 2px solid #60a5fa; box-shadow: 0 10px 25px rgba(0,0,0,0.8);">
+        </div>
+    </div>
+
     <!-- Website QR & Download Modal -->
     <div class="modal" id="siteQrModal">
         <div class="modal-box qr-section">
             <h3><span>🌐 Website QR & Download</span> <button class="close-x" onclick="closeModal('siteQrModal')">×</button></h3>
             <div style="font-size: 12px; color: #93c5fd; margin-bottom: 8px;">Is QR code ko scan karke koi bhi direct website khol sakta hai:</div>
-            <div class="qr-box" style="background:#fff; padding:10px; border-radius:8px; display:inline-block; margin-bottom:10px;">
-                <img id="displaySiteQr" src="" alt="Site QR" style="width:160px; height:160px; display:block; margin:0 auto;">
+            <div class="qr-box">
+                <img id="displaySiteQr" src="" alt="Site QR">
             </div>
             <div style="font-size: 11px; color: #d1d5db; margin-bottom: 12px;" id="displayUrlText"></div>
             
@@ -140,13 +175,11 @@
     <div class="modal" id="rateModal">
         <div class="modal-box">
             <h3><span>✂️ सर्विस रेट लिस्ट</span> <button class="close-x" onclick="closeModal('rateModal')">×</button></h3>
-            <div id="displayCatalog">
-                <!-- Dynamically populated items -->
-            </div>
+            <div id="displayCatalog"></div>
         </div>
     </div>
 
-    <!-- Payment QR Modal with Share Feature -->
+    <!-- Payment QR Modal -->
     <div class="modal" id="payModal">
         <div class="modal-box qr-section">
             <h3><span>📲 सीधा पेमेंट QR</span> <button class="close-x" onclick="closeModal('payModal')">×</button></h3>
@@ -202,13 +235,32 @@
                 </div>
                 <div class="form-group">
                     <label>Live Website URL (jaise https://rajasaloon.netlify.app)</label>
-                    <input type="text" id="inputWebsiteUrl" value="https://rajasaloon.netlify.app" placeholder="Apni website ka link dalein">
+                    <input type="text" id="inputWebsiteUrl" value="https://rajasaloon.netlify.app">
                 </div>
 
-                <h4 style="color: #facc15; font-size: 13px; margin: 10px 0 6px 0; border-top: 1px solid #374151; padding-top: 8px;">Rate List Customization (Items & Prices)</h4>
-                <div id="adminItemsContainer">
-                    <!-- Dynamic admin item rows -->
+                <!-- Live Photo Banner Admin Options -->
+                <h4 style="color: #facc15; font-size: 13px; margin: 12px 0 6px 0; border-top: 1px solid #374151; padding-top: 8px;">🖼️ Live Banner Photo & Domain Link</h4>
+                <div class="form-group">
+                    <label>Banner Photo Direct Link (URL)</label>
+                    <input type="text" id="inputBannerImg" value="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600">
                 </div>
+                <div class="form-group">
+                    <label>Photo Par Click Karne Par Khulne Wala Link (Domain Link)</label>
+                    <input type="text" id="inputBannerLink" value="https://dakshyadav.co.in">
+                </div>
+
+                <!-- Gallery Manager Section -->
+                <h4 style="color: #facc15; font-size: 13px; margin: 12px 0 6px 0; border-top: 1px solid #374151; padding-top: 8px;">📸 Photo Gallery Manager</h4>
+                <div style="display: flex; gap: 6px; margin-bottom: 8px;">
+                    <button class="add-item-btn" onclick="document.getElementById('galleryFileInput').click()" style="background:#059669; margin-bottom:0;">📁 Phone Gallery Se Add Karein</button>
+                    <input type="file" id="galleryFileInput" accept="image/*" style="display:none;" onchange="handleGalleryUpload(event)">
+                </div>
+                <div id="adminGalleryContainer">
+                    <!-- Dynamic Admin Gallery Rows -->
+                </div>
+
+                <h4 style="color: #facc15; font-size: 13px; margin: 12px 0 6px 0; border-top: 1px solid #374151; padding-top: 8px;">✂️ Rate List Customization</h4>
+                <div id="adminItemsContainer"></div>
                 <button class="add-item-btn" onclick="addAdminItemRow('Naya Item', '₹100')">+ Naya Item Jodein</button>
 
                 <button class="save-admin-btn" onclick="saveAdminChanges()">Badlaav Save Karein</button>
@@ -227,12 +279,23 @@
             { name: "Facial / Cleanup (फेशियल)", price: "₹300" }
         ];
 
+        let galleryList = [
+            "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=500",
+            "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=500",
+            "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=500"
+        ];
+
         function openModal(modalId) {
             document.getElementById(modalId).style.display = 'flex';
         }
 
         function closeModal(modalId) {
             document.getElementById(modalId).style.display = 'none';
+        }
+
+        function zoomImage(src) {
+            document.getElementById('zoomedImage').src = src;
+            openModal('imageZoomModal');
         }
 
         function openAdminModal() {
@@ -246,6 +309,7 @@
                 loginV.style.display = 'none';
                 dashV.style.display = 'block';
                 renderAdminItems();
+                renderAdminGallery();
             } else {
                 titleEl.innerHTML = '<span>🔐 Admin Login</span> <button class="close-x" onclick="closeModal(\'adminModal\')">×</button>';
                 document.getElementById('adminPassInput').value = '';
@@ -305,6 +369,54 @@
                 }
                 reader.readAsDataURL(file);
             }
+        }
+
+        function handleGalleryUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const base64Image = e.target.result;
+                    galleryList.push(base64Image);
+                    renderAdminGallery();
+                    renderGallery();
+                    localStorage.setItem('raja_gallery_list', JSON.stringify(galleryList));
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function renderGallery() {
+            const container = document.getElementById('displayGalleryGrid');
+            container.innerHTML = '';
+            galleryList.forEach(imgUrl => {
+                const div = document.createElement('div');
+                div.className = 'gallery-item';
+                div.innerHTML = `<img src="${imgUrl}" onclick="zoomImage('${imgUrl}')" alt="Saloon Work">`;
+                container.appendChild(div);
+            });
+        }
+
+        function renderAdminGallery() {
+            const container = document.getElementById('adminGalleryContainer');
+            container.innerHTML = '';
+            galleryList.forEach((imgUrl, index) => {
+                const row = document.createElement('div');
+                row.className = 'admin-gallery-item';
+                row.innerHTML = `
+                    <img src="${imgUrl}">
+                    <span style="font-size:11px; flex:1; color:#9ca3af; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">Photo #${index+1}</span>
+                    <button class="delete-item-btn" onclick="removeGalleryItem(${index})">❌</button>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        function removeGalleryItem(index) {
+            galleryList.splice(index, 1);
+            renderAdminGallery();
+            renderGallery();
+            localStorage.setItem('raja_gallery_list', JSON.stringify(galleryList));
         }
 
         function shareWebsite() {
@@ -377,6 +489,8 @@
             const sSpecial = document.getElementById('inputSpecial').value;
             const sAddress = document.getElementById('inputAddress').value;
             const sTime = document.getElementById('inputTime').value;
+            const sBannerImg = document.getElementById('inputBannerImg').value;
+            const sBannerLink = document.getElementById('inputBannerLink').value;
 
             let newItems = [];
             itemsList.forEach((_, index) => {
@@ -395,6 +509,8 @@
             document.getElementById('displaySpecial').innerText = sSpecial;
             document.getElementById('displayAddressText').innerText = sAddress;
             document.getElementById('displayTimeText').innerText = sTime;
+            document.getElementById('displayBannerImg').src = sBannerImg;
+            document.getElementById('displayBannerLink').href = sBannerLink;
 
             renderCatalog();
 
@@ -408,10 +524,14 @@
             localStorage.setItem('raja_address', sAddress);
             localStorage.setItem('raja_time', sTime);
             localStorage.setItem('raja_mobile', sMobile);
+            localStorage.setItem('raja_banner_img', sBannerImg);
+            localStorage.setItem('raja_banner_link', sBannerLink);
+            
             const sWebsiteUrl = document.getElementById('inputWebsiteUrl').value.trim();
             localStorage.setItem('raja_website_url', sWebsiteUrl);
             
             localStorage.setItem('raja_items_list', JSON.stringify(itemsList));
+            localStorage.setItem('raja_gallery_list', JSON.stringify(galleryList));
 
             alert('Sabhi badlaav successfully save ho gaye hain!');
             closeModal('adminModal');
@@ -480,6 +600,14 @@
             if(localStorage.getItem('raja_qr_pic')) {
                 document.getElementById('displayQrImg').src = localStorage.getItem('raja_qr_pic');
             }
+            if(localStorage.getItem('raja_banner_img')) {
+                document.getElementById('displayBannerImg').src = localStorage.getItem('raja_banner_img');
+                document.getElementById('inputBannerImg').value = localStorage.getItem('raja_banner_img');
+            }
+            if(localStorage.getItem('raja_banner_link')) {
+                document.getElementById('displayBannerLink').href = localStorage.getItem('raja_banner_link');
+                document.getElementById('inputBannerLink').value = localStorage.getItem('raja_banner_link');
+            }
             if(localStorage.getItem('raja_shop_name')) {
                 const val = localStorage.getItem('raja_shop_name');
                 document.getElementById('displayShopName').innerText = val;
@@ -515,7 +643,13 @@
                     itemsList = JSON.parse(localStorage.getItem('raja_items_list'));
                 } catch(e) {}
             }
+            if(localStorage.getItem('raja_gallery_list')) {
+                try {
+                    galleryList = JSON.parse(localStorage.getItem('raja_gallery_list'));
+                } catch(e) {}
+            }
             renderCatalog();
+            renderGallery();
         }
 
         window.onload = loadSavedData;
